@@ -2,7 +2,7 @@
 
 Welcome to our Rabbit and Carrot population simulation project. This project was developed as part of a school project by a group of students.
 
-![Alt text](img/test.png)
+![Alt text](img/rabbitGamePicture.png)
 
 # Overview
 In this project, we have created a simulation of a garden where rabbits and carrots interact. Rabbits can live up to 4 years if they don't die of hunger and up to 6 years if well-fed by eating every week. Rabbits can reproduce from the age of 1 year if they have a partner. Carrots are sown in March and give birth to two litters of a maximum of 6 little carrots each, one in April and the other in July. The evolution of populations is programmed using Python.
