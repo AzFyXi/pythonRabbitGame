@@ -6,27 +6,36 @@ from animals import Rabbit, Gender
 class Carrot:
     def __init__(self, count):
         self.count = count
+        self.positions = []  # Ajouter une liste pour stocker les positions des carottes
 
     def consume(self):
-        """ Consumes a carrot, if available. """
-        if self.count > 0:
+        """ Consumes a carrot, if available, and removes its position. """
+        if self.count > 0 and self.positions:
             self.count -= 1
-            return True
-        return False
+            return self.positions.pop()  # Retire et renvoie la position de la carotte consommée
+        return None
 
-    def harvest(self, additional_count):
-        """ Adds carrots to the garden. """
+    def harvest(self, additional_count, window_size, margin_x, margin_y):
+        """ Adds carrots to the garden and generates their positions. """
         self.count += additional_count
+        for _ in range(additional_count):
+            pos_x = random.randint(margin_x, window_size[0] - margin_x)
+            pos_y = random.randint(margin_y, window_size[1] - margin_y)
+            self.positions.append((pos_x, pos_y))
 
 # Garden Class
 class Garden:
     WEEKS_PER_YEAR = 52
 
-    def __init__(self):
+    def __init__(self, window_size, margin_x, margin_y):
+        self.window_size = window_size
+        self.margin_x = margin_x
+        self.margin_y = margin_y
         self.rabbits = [Rabbit(Gender.MALE), Rabbit(Gender.FEMALE)]
         self.carrots = Carrot(200)
         self.current_week = 9
         self.last_planting_year = 0
+        self.carrots.harvest(200, self.window_size, self.margin_x, self.margin_y)
 
     def has_carrots(self):
         """ Checks if there are any carrots in the garden. """
@@ -44,11 +53,11 @@ class Garden:
 
         # Planting and harvesting logic
         if week_of_year == 9 and current_year != self.last_planting_year:
-            self.carrots.harvest(200)
+            self.carrots.harvest(200, self.window_size, self.margin_x, self.margin_y)
             self.last_planting_year = current_year
 
         if week_of_year == 22:
-            self.carrots.harvest(200)
+            self.carrots.harvest(200, self.window_size, self.margin_x, self.margin_y)
 
         rabbit_population = len(self.rabbits)
         epidemic_risk = 0.05

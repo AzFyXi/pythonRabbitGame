@@ -40,7 +40,7 @@ class Rabbit:
 
     def is_sick(self, epidemic_risk, rabbit_population):
         """ Determines if the rabbit gets sick based on various factors. """
-        base_disease_probability = 0.07
+        base_disease_probability = 0.06
         age_factor = (self.age / self.MAX_HEALTHY_AGE) ** 2
         population_factor = rabbit_population / 15
         return random.random() < (base_disease_probability + epidemic_risk * population_factor) * age_factor
