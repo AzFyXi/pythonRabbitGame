@@ -6,8 +6,8 @@ def show_settings_menu(screen, logo_image, menu_background_image, prev_button_im
     font = pygame.font.SysFont('comicsansms', 30)
 
     # Chargement des images on/off
-    on_image = pygame.image.load('img/on.png')
-    off_image = pygame.image.load('img/off.png')
+    on_image = pygame.transform.scale(pygame.image.load('img/on.png'), (90, 40))
+    off_image = pygame.transform.scale(pygame.image.load('img/off.png'), (90, 40))
 
     # États initiaux pour Hunter et Fox
     hunter_enabled = False
@@ -16,27 +16,17 @@ def show_settings_menu(screen, logo_image, menu_background_image, prev_button_im
     settings_menu = True
 
     while settings_menu:
+        clicked = False
+        mouse_pos = None
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
 
-            # Initialiser 'clicked' au début de chaque itération
-            clicked = False
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    clicked = True
-
-            mouse_pos = pygame.mouse.get_pos()
-
-            if clicked:
-                # Gérer les clics sur les images on/off
-                # Assurez-vous que hunter_button_rect et fox_button_rect sont définis
-                if hunter_button_rect.collidepoint(mouse_pos):
-                    hunter_enabled = not hunter_enabled
-                if fox_button_rect.collidepoint(mouse_pos):
-                    fox_enabled = not fox_enabled
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse_pos = pygame.mouse.get_pos()
+                clicked = True
 
         screen.blit(menu_background_image, (0, 0))
         logo_rect = logo_image.get_rect(center=(screen.get_width() // 2, 100))
@@ -74,9 +64,13 @@ def show_settings_menu(screen, logo_image, menu_background_image, prev_button_im
                 else:  # "Fox:"
                     fox_enabled = not fox_enabled
 
-            y_offset_right += 40
+            y_offset_right += 60
 
         pygame.display.update()
+
+        # Vérifier si le bouton retour a été cliqué
+        if clicked and prev_button_rect.collidepoint(mouse_pos):
+            settings_menu = False
     
     # Retourner les paramètres ajustés
     return hunter_enabled, fox_enabled

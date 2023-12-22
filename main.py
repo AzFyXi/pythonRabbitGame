@@ -1,4 +1,3 @@
-# main.py
 import pygame
 import matplotlib.pyplot as plt
 from garden import Garden
@@ -18,16 +17,17 @@ logo_image = pygame.image.load('img/logo.png')
 logo_image = pygame.transform.scale(logo_image, (300, 300))
 
 def fade_in_out(image, logo, screen, duration, stay_time):
-    """ Fades an image in and out on the screen. """
+    """ Fades an image and a logo in and out on the screen. """
     fade_in_duration = fade_out_duration = duration / 2
     start_time = time.time()
     image_rect = image.get_rect(center=(window_size[0] // 2, window_size[1] // 2))
     logo_rect = logo.get_rect(center=(window_size[0] // 2, window_size[1] // 2))
+
     while True:
         current_time = time.time()
         elapsed_time = current_time - start_time
 
-        # Fade in/out logic
+        # Calcul de l'alpha pour le fondu
         if elapsed_time < fade_in_duration:
             alpha = (elapsed_time / fade_in_duration) * 255
         elif elapsed_time < fade_in_duration + stay_time:
@@ -38,6 +38,7 @@ def fade_in_out(image, logo, screen, duration, stay_time):
             break
 
         image.set_alpha(alpha)
+        logo.set_alpha(alpha)  # Applique le même alpha au logo
         screen.fill((0, 0, 0))
         screen.blit(image, image_rect)
         screen.blit(logo, logo_rect)
@@ -66,10 +67,56 @@ prev_button_image = pygame.image.load('img/prev.png')
 def show_menu():
     menu = True
     while menu:
+        clicked = False  # Définir 'clicked' à chaque itération de la boucle principale
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                clicked = True
+                mouse_pos = pygame.mouse.get_pos()
+
+                # Actions des boutons
+                if play_button_rect.collidepoint(mouse_pos):
+                    menu = False  # Quitter le menu et lancer la partie
+                elif setting_button_rect.collidepoint(mouse_pos):
+                    show_settings_menu(screen, logo_image, menu_background_image, prev_button_image)
+                    # Ouvrir le menu des options
+                elif exit_button_rect.collidepoint(mouse_pos):
+                    pygame.quit()
+                    quit()
+
+        screen.blit(menu_background_image, (0, 0))
+        logo_rect = logo_image.get_rect(center=(window_size[0] // 2, 100))
+        screen.blit(logo_image, logo_rect)
+
+        # Positionnement des boutons en ligne
+        button_y_position = 300
+        play_button_rect = play_button_image.get_rect(center=(window_size[0] // 2 - 150, button_y_position))
+        if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                clicked = True
+                mouse_pos = pygame.mouse.get_pos()
+
+                # Actions des boutons
+                if play_button_rect.collidepoint(mouse_pos):
+                    menu = False  # Quitter le menu et lancer la partie
+                elif setting_button_rect.collidepoint(mouse_pos):
+                    show_settings_menu(screen, logo_image, menu_background_image, prev_button_image)
+                    # Ouvrir le menu des options
+                elif exit_button_rect.collidepoint(mouse_pos):
+                    pygame.quit()
+                    quit()
 
         screen.blit(menu_background_image, (0, 0))
         logo_rect = logo_image.get_rect(center=(window_size[0] // 2, 100))
@@ -184,7 +231,7 @@ while running:
     carrot_counts.append(garden.carrots.count)
 
 # Data visualization with Matplotlib
-import matplotlib.pyplot as plt
+
 plt.figure(figsize=(10, 6))
 plt.plot(weeks, rabbit_counts, label='Rabbits')
 plt.plot(weeks, carrot_counts, label='Carrots')
