@@ -1,6 +1,5 @@
-# garden.py
 import random
-from animals import Rabbit, Gender
+from animals import Rabbit, Gender, Fox, Hunter
 
 # Carrot Class
 class Carrot:
@@ -27,7 +26,7 @@ class Carrot:
 class Garden:
     WEEKS_PER_YEAR = 52
 
-    def __init__(self, window_size, margin_x, margin_y):
+    def __init__(self, window_size, margin_x, margin_y, has_hunter=False, has_fox=False):
         self.window_size = window_size
         self.margin_x = margin_x
         self.margin_y = margin_y
@@ -36,6 +35,8 @@ class Garden:
         self.current_week = 9
         self.last_planting_year = 0
         self.carrots.harvest(200, self.window_size, self.margin_x, self.margin_y)
+        self.hunter = Hunter('img/hunter.png') if has_hunter else None
+        self.fox = Fox('img/fox.png') if has_fox else None
 
     def has_carrots(self):
         """ Checks if there are any carrots in the garden. """
@@ -85,3 +86,11 @@ class Garden:
                         self.rabbits.append(Rabbit(gender=random.choice([Gender.MALE, Gender.FEMALE])))
                     mother.last_reproduction_week = self.current_week // self.WEEKS_PER_YEAR
                     father.last_reproduction_week = self.current_week // self.WEEKS_PER_YEAR
+
+    def update(self):
+        # Call this method each week/month to update the garden state
+        # Implement logic for fox and hunter actions
+        if self.fox:
+            self.fox.hunt(self.rabbits)  # Fox hunts rabbits
+        if self.hunter:
+            self.hunter.hunt(self.fox)  # Hunter hunts the fox

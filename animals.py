@@ -52,3 +52,25 @@ class Rabbit:
         if current_week is not None and current_week <= 12 and self.last_reproduction_week is None:
             return False
         return self.is_sick(epidemic_risk, rabbit_population)
+
+# Fox Class
+class Fox:
+    def __init__(self, image):
+        self.image = image
+        self.hunger = 0  # Fox hunger level, increases over time
+
+    def hunt(self, rabbits):
+        # Implement fox hunting behavior here
+        # Can eat a maximum of 1 rabbit per month
+        pass
+
+# Hunter Class
+class Hunter:
+    def __init__(self, image):
+        self.image = image
+        self.ammunition = 5  # Starting ammunition for hunter
+
+    def hunt(self, foxes):
+        # Implement hunter's action here
+        # Can kill a fox every 3 months
+        pass

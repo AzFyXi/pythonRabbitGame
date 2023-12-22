@@ -27,13 +27,11 @@ def fade_in_out(image, logo, screen, duration, stay_time):
         current_time = time.time()
         elapsed_time = current_time - start_time
 
-        # Fade in
+        # Fade in/out logic
         if elapsed_time < fade_in_duration:
             alpha = (elapsed_time / fade_in_duration) * 255
-        # Stay visible
         elif elapsed_time < fade_in_duration + stay_time:
             alpha = 255
-        # Fade out
         elif elapsed_time < fade_in_duration + stay_time + fade_out_duration:
             alpha = 255 - ((elapsed_time - fade_in_duration - stay_time) / fade_out_duration) * 255
         else:
@@ -42,7 +40,7 @@ def fade_in_out(image, logo, screen, duration, stay_time):
         image.set_alpha(alpha)
         screen.fill((0, 0, 0))
         screen.blit(image, image_rect)
-        screen.blit(logo, logo_rect)  # Affichage du logo
+        screen.blit(logo, logo_rect)
         pygame.display.update()
 
 # Loading and displaying the loading screen
