@@ -1,24 +1,28 @@
 # main.py
-import pygame.mixer
 import pygame
 import matplotlib.pyplot as plt
 from garden import Garden
 from animals import Gender
+from settings_menu import show_settings_menu
 import random
 import time
 
 # Pygame initialization and other configurations
 pygame.init()
 
-window_size = (800, 600)
+window_size = (1024, 576)
 screen = pygame.display.set_mode(window_size)
 pygame.display.set_caption("Rabbit Garden")
 
-def fade_in_out(image, screen, duration, stay_time):
+logo_image = pygame.image.load('img/logo.png')
+logo_image = pygame.transform.scale(logo_image, (300, 300))
+
+def fade_in_out(image, logo, screen, duration, stay_time):
     """ Fades an image in and out on the screen. """
     fade_in_duration = fade_out_duration = duration / 2
     start_time = time.time()
     image_rect = image.get_rect(center=(window_size[0] // 2, window_size[1] // 2))
+    logo_rect = logo.get_rect(center=(window_size[0] // 2, window_size[1] // 2))
     while True:
         current_time = time.time()
         elapsed_time = current_time - start_time
@@ -38,16 +42,73 @@ def fade_in_out(image, screen, duration, stay_time):
         image.set_alpha(alpha)
         screen.fill((0, 0, 0))
         screen.blit(image, image_rect)
+        screen.blit(logo, logo_rect)  # Affichage du logo
         pygame.display.update()
 
+# Loading and displaying the loading screen
 loading_image = pygame.image.load('img/loading.png')
-desired_width = 900
-desired_height = 700
+desired_width = 1024
+desired_height = 576
 loading_image = pygame.transform.scale(loading_image, (desired_width, desired_height))
-# Display the loading screen with fade in and out
 fade_duration = 1.0  # Duration for fade in and fade out
-stay_duration = 2.0  # Duration for the image to stay visible
-fade_in_out(loading_image, screen, fade_duration, stay_duration)
+stay_duration = 1.0  # Duration for the image to stay visible
+fade_in_out(loading_image, logo_image, screen, fade_duration, stay_duration)
+
+# Chargement des images pour le menu
+menu_background_image = pygame.image.load('img/menuBackground.png')
+menu_background_image = pygame.transform.scale(menu_background_image, window_size)
+logo_image = pygame.image.load('img/logo.png')
+logo_image = pygame.transform.scale(logo_image, (200, 200))
+
+play_button_image = pygame.image.load('img/play.png')
+setting_button_image = pygame.image.load('img/setting.png')
+exit_button_image = pygame.image.load('img/exit.png')
+prev_button_image = pygame.image.load('img/prev.png')
+
+def show_menu():
+    menu = True
+    while menu:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+        screen.blit(menu_background_image, (0, 0))
+        logo_rect = logo_image.get_rect(center=(window_size[0] // 2, 100))
+        screen.blit(logo_image, logo_rect)
+
+        # Positionnement des boutons en ligne
+        button_y_position = 300
+        play_button_rect = play_button_image.get_rect(center=(window_size[0] // 2 - 150, button_y_position))
+        setting_button_rect = setting_button_image.get_rect(center=(window_size[0] // 2, button_y_position))
+        exit_button_rect = exit_button_image.get_rect(center=(window_size[0] // 2 + 150, button_y_position))
+
+        screen.blit(play_button_image, play_button_rect)
+        screen.blit(setting_button_image, setting_button_rect)
+        screen.blit(exit_button_image, exit_button_rect)
+
+        clicked = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                clicked = True
+
+        mouse_pos = pygame.mouse.get_pos()
+
+        # Actions des boutons
+        
+        if play_button_rect.collidepoint(mouse_pos) and clicked:
+            menu = False  # Quitter le menu et lancer la partie
+        if setting_button_rect.collidepoint(mouse_pos) and clicked:
+            show_settings_menu(screen, logo_image, menu_background_image, prev_button_image)
+            # Ouvrir le menu des options
+            pass
+        elif exit_button_rect.collidepoint(mouse_pos) and clicked:
+            pygame.quit()
+            quit()
+
+        pygame.display.update()
+
+show_menu()
 
 background_image = pygame.image.load('img/garden.png')
 background_image = pygame.transform.scale(background_image, window_size)
@@ -73,8 +134,6 @@ rabbit_counts = []
 carrot_counts = []
 total_months = 0
 
-pygame.mixer.music.load('music/musique.mp3')
-pygame.mixer.music.play(-1)
 
 # Main loop for the simulation over 6 years
 running = True
